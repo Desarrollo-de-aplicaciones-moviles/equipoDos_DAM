@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.util.Patterns
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -17,6 +20,7 @@ import androidx.databinding.DataBindingUtil
 import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.databinding.ActivityLoginBinding
 import com.appmovil.proyecto2.viewmodel.LoginViewModel
+import com.google.android.material.textfield.TextInputLayout
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -32,33 +36,74 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun sentinel(){
+        binding.etEmail.addTextChangedListener (object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                validateLoginButton()
+            }
+        })
+
         binding.etPass.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
             override fun afterTextChanged(s: Editable?) {
                 val passwordLength = s?.length ?: 0
                 val tvPasswordError = binding.tvPasswordError
+                val eyeIcon = binding.tilPass.endIconDrawable
+                val tilPass = binding.tilPass
+                val etPass = binding.etPass
+
+                validateLoginButton()
 
                 if (passwordLength < 6) {
                     val colorOrange = ContextCompat.getColor(this@LoginActivity, R.color.orange)
-                    binding.tilPass.boxStrokeColor =
-                        colorOrange
-                    binding.tilPass.defaultHintTextColor =
-                        ColorStateList.valueOf(colorOrange)
+                    binding.tilPass.boxStrokeColor = colorOrange
+                    binding.tilPass.defaultHintTextColor = ColorStateList.valueOf(colorOrange)
                     tvPasswordError.visibility = View.VISIBLE
                 } else {
                     val colorDefault = ContextCompat.getColor(this@LoginActivity, R.color.white)
-                    binding.tilPass.boxStrokeColor =
-                        colorDefault
-                    binding.tilPass.defaultHintTextColor =
-                        ColorStateList.valueOf(colorDefault)
+                    binding.tilPass.boxStrokeColor = colorDefault
+                    binding.tilPass.defaultHintTextColor = ColorStateList.valueOf(colorDefault)
                     tvPasswordError.visibility = View.GONE
+                }
+
+                if (passwordLength > 0) {
+                    eyeIcon?.setTint(ContextCompat.getColor(this@LoginActivity, R.color.white))
+                    tilPass.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+                    tilPass.setEndIconOnClickListener {
+                        val cursorPosition = etPass.selectionEnd
+                        etPass.transformationMethod = if (etPass.transformationMethod == PasswordTransformationMethod.getInstance())
+                            HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+                        eyeIcon?.setTint(ContextCompat.getColor(this@LoginActivity, R.color.gray))
+
+                        etPass.setSelection(cursorPosition)
+                    }
+                } else { //Si no hay texto en el campo
+                    eyeIcon?.setTint(ContextCompat.getColor(this@LoginActivity, R.color.gray))
+                    tilPass.endIconMode = TextInputLayout.END_ICON_NONE
+                    tilPass.setEndIconOnClickListener(null)
                 }
             }
         })
     }
 
+    private fun validateLoginButton() {
+        val btnLogin = binding.btnLogin
+        val email = binding.etEmail.text.toString().trim()
+        val password = binding.etPass.text.toString().trim()
+
+        val isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        val isPasswordValid = password.length >= 6
+
+        if (isEmailValid && isPasswordValid) {
+            btnLogin.isEnabled = true
+            btnLogin.setBackgroundColor(ContextCompat.getColor(this@LoginActivity, R.color.orange))
+        } else {
+            btnLogin.isEnabled = false
+            btnLogin.setBackgroundColor(ContextCompat.getColor(this@LoginActivity, R.color.orange_disabled))
+        }
+    }
     private fun setup() {
         binding.tvRegister.setOnClickListener {
            registerUser()
