@@ -7,7 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.library.R
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.appmovil.proyecto2.databinding.FragmentHomeBinding
 import com.appmovil.proyecto2.view.HomeActivity
 import com.appmovil.proyecto2.view.LoginActivity
@@ -33,6 +37,7 @@ class HomeFragment : Fragment() {
         sharedPreferences = requireActivity().getSharedPreferences("shared", Context.MODE_PRIVATE)
         dataLogin()
         setup()
+        controladores()
     }
 
     private fun setup() {
@@ -55,4 +60,11 @@ class HomeFragment : Fragment() {
             finish()
         }
     }
+
+    private fun controladores() {
+        binding.fbagregar.setOnClickListener {
+            findNavController().navigate(com.appmovil.proyecto2.R.id.action_homeFragment_to_addFragment)
+        }
+    }
+
 }
