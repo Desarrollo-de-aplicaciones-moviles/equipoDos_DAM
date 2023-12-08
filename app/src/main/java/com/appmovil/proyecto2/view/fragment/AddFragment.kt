@@ -16,12 +16,16 @@ import android.widget.EditText
 import android.widget.Toast
 import android.text.Editable
 import android.text.TextWatcher
+import com.appmovil.proyecto2.viewmodel.InventoryViewModel
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
 
 class AddFragment : Fragment() {
     private lateinit var binding: FragmentAddBinding
-    private val db = FirebaseFirestore.getInstance()
+    private lateinit var viewModel: InventoryViewModel
+
     private var originalTextColor: Int = 0
     private var originalTextTypeface: Typeface? = null
 
@@ -30,6 +34,7 @@ class AddFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAddBinding.inflate(inflater)
+        viewModel = ViewModelProvider(this).get(InventoryViewModel::class.java)
         val backIcon: ImageView = binding.root.findViewById(R.id.backButton)
         backIcon.setOnClickListener {
             it.animate().scaleX(0.8f).scaleY(0.8f).setDuration(200).withEndAction {
@@ -53,60 +58,20 @@ class AddFragment : Fragment() {
 
     private fun controladores() {
         binding.btnSave.setOnClickListener {
-            guardarProducto()
-            listarProducto()
-            limpiarCampos()
+            val codigo = binding.editTextCodigoProducto.text.toString().toInt()
+            val nombre = binding.editTextNombre.text.toString()
+            val precio = binding.editTextPrecio.text.toString().toInt()
+            val cantidad = binding.editTextCantidad.text.toString().toInt()
+
+            viewModel.guardarProducto(codigo, nombre, precio, cantidad)
         }
     }
 
-    private fun guardarProducto() {
-        val codigo = binding.editTextCodigoProducto.text.toString()
-        val nombre = binding.editTextNombre.text.toString()
-        val precio = binding.editTextPrecio.text.toString()
-        val cantidad = binding.editTextCantidad.text.toString()
-
-        if (codigo.isNotEmpty() && nombre.isNotEmpty() && precio.isNotEmpty() && cantidad.isNotEmpty()) {
-            val articulo = Articulo(codigo.toInt(), nombre, precio.toInt(), cantidad.toInt())
-
-            db.collection("articulo").document(articulo.codigo.toString()).set(
-                hashMapOf(
-                    "codigo" to articulo.codigo,
-                    "nombre" to articulo.nombre,
-                    "precio" to articulo.precio,
-                    "cantidad" to articulo.cantidad
-                )
-            )
-
-            Toast.makeText(context, "Articulo guardado", Toast.LENGTH_SHORT).show()
-            limpiarCampos()
-            listarProducto()
-        } else {
-            Toast.makeText(context, "Llene los campos", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun listarProducto(){
-        db.collection("articulo").get().addOnSuccessListener {
-            var data = ""
-            for (document in it.documents) {
-                // Aquí puedes personalizar cómo deseas mostrar cada artículo en la lista
-                data += "Código: ${document.get("codigo")} " +
-                        "Nombre: ${document.get("nombre")} " +
-                        "Precio: ${document.get("precio")} " +
-                        "Cantidad: ${document.get("cantidad")}\n\n"
-
-            }
-            binding.tvListProducto.text = data
-        }
-    }
-    private fun limpiarCampos() {
-        binding.editTextCodigoProducto.setText("")
-        binding.editTextNombre.setText("")
-        binding.editTextPrecio.setText("")
-        binding.editTextCantidad.setText("")
-    }
 
     private fun observarCampos() {
+        viewModel.listarProductos().observe(viewLifecycleOwner, Observer { productos ->
+            binding.tvListProducto.text = productos
+        })
         val editTextCodigo = binding.editTextCodigoProducto
         val editTextNombre = binding.editTextNombre
         val editTextPrecio = binding.editTextPrecio
