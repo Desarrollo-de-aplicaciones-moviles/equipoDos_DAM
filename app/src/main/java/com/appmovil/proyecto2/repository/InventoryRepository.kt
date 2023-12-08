@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 class InventoryRepository {
     private val db = FirebaseFirestore.getInstance()
     private val listProductos = MutableLiveData<String>()
+    private val inventoryList = MutableLiveData<MutableList<Articulo>>()
 
     fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int) {
         val articulo = Articulo(codigo, nombre, precio, cantidad)
@@ -38,5 +39,20 @@ class InventoryRepository {
             listProductos.postValue(data)
         }
         return listProductos
+    }
+    fun getInventory(): LiveData<MutableList<Articulo>> {
+        db.collection("articulo").get().addOnSuccessListener {
+            var data:MutableList<Articulo> = mutableListOf()
+            for (document in it.documents) {
+                val item = Articulo(document.get("codigo").toString().toInt()
+                    ,document.get("nombre").toString()
+                    ,document.get("precio").toString().toInt()
+                    ,document.get("cantidad").toString().toInt())
+                data.add(item)
+            }
+            // Notificar la lista de productos
+            inventoryList.value = data
+        }
+        return inventoryList
     }
 }
