@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.databinding.library.R
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.appmovil.proyecto2.databinding.FragmentHomeBinding
 import com.appmovil.proyecto2.view.HomeActivity
