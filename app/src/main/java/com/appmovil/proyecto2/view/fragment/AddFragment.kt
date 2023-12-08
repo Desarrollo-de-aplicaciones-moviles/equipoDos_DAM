@@ -1,6 +1,5 @@
 package com.appmovil.proyecto2.view.fragment
 
-import android.content.Context
 import android.graphics.Typeface
 import androidx.core.content.ContextCompat
 import android.os.Bundle
@@ -10,16 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.databinding.FragmentAddBinding
-import com.appmovil.proyecto2.model.Articulo
 import android.widget.ImageView
-import android.widget.EditText
-import android.widget.Toast
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.Toast
 import com.appmovil.proyecto2.viewmodel.InventoryViewModel
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.firestore.FirebaseFirestore
+import androidx.navigation.fragment.findNavController
 
 
 class AddFragment : Fragment() {
@@ -54,6 +50,25 @@ class AddFragment : Fragment() {
         val btnGuardar = binding.btnSave
         originalTextColor = btnGuardar.currentTextColor
         originalTextTypeface = btnGuardar.typeface
+
+        binding.btnSave.setOnClickListener {
+            val codigo = binding.editTextCodigoProducto.text.toString().toInt()
+            val nombre = binding.editTextNombre.text.toString()
+            val precio = binding.editTextPrecio.text.toString().toInt()
+            val cantidad = binding.editTextCantidad.text.toString().toInt()
+
+            viewModel.guardarProducto(codigo, nombre, precio, cantidad)
+        }
+
+        viewModel.getProductoGuardadoLiveData().observe(viewLifecycleOwner, { exitoso ->
+            if (exitoso) {
+                // Si la operación fue exitosa, navegar al fragmento del home
+                findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+            } else {
+                // Si hubo un error, mostrar un Toast
+                Toast.makeText(requireContext(), "Error al guardar el producto", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun controladores() {
@@ -67,20 +82,14 @@ class AddFragment : Fragment() {
         }
     }
 
-
     private fun observarCampos() {
-        viewModel.listarProductos().observe(viewLifecycleOwner, Observer { productos ->
-            binding.tvListProducto.text = productos
-        })
+        //viewModel.listarProductos().observe(viewLifecycleOwner, Observer { productos ->
+        //    binding.tvListProducto.text = productos
+        //})
         val editTextCodigo = binding.editTextCodigoProducto
         val editTextNombre = binding.editTextNombre
         val editTextPrecio = binding.editTextPrecio
         val editTextCantidad = binding.editTextCantidad
-
-        setFocusChangeListener(editTextCodigo)
-        setFocusChangeListener(editTextNombre)
-        setFocusChangeListener(editTextPrecio)
-        setFocusChangeListener(editTextCantidad)
 
         editTextCodigo.addTextChangedListener(textWatcher)
         editTextNombre.addTextChangedListener(textWatcher)
@@ -88,15 +97,7 @@ class AddFragment : Fragment() {
         editTextCantidad.addTextChangedListener(textWatcher)
     }
 
-    private fun setFocusChangeListener(editText: EditText) {
-        editText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                editText.setBackgroundResource(R.drawable.bg_highlighted)
-            } else {
-                editText.setBackgroundResource(R.drawable.bg_redondo)
-            }
-        }
-    }
+
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {
