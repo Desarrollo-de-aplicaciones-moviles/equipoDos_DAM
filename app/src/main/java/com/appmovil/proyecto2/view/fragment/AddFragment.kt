@@ -16,8 +16,9 @@ import android.widget.Toast
 import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class AddFragment : Fragment() {
     private lateinit var binding: FragmentAddBinding
     private lateinit var viewModel: InventoryViewModel

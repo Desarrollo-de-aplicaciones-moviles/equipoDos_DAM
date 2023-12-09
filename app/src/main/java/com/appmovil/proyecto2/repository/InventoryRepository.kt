@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.appmovil.proyecto2.model.Articulo
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
 
-class InventoryRepository {
-    private val db = FirebaseFirestore.getInstance()
-    private val listProductos = MutableLiveData<String>()
-
+class InventoryRepository @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val listProductos: MutableLiveData<String>
+){
     fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int, productoGuardado: MutableLiveData<Boolean>) {
         val articulo = Articulo(codigo, nombre, precio, cantidad)
 
