@@ -8,4 +8,6 @@
     <string name="appwidget_img">logo</string>
     <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
+    <string name="text_widget_inventory">Inventory</string>
+    <string name="text_widget_cuantoT">¿Cuánto tengo de inventario?</string>
 </resources>
