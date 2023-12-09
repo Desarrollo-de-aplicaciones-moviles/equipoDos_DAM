@@ -10,4 +10,6 @@
     <string name="app_widget_description">This is an app widget description</string>
     <string name="text_widget_inventory">Inventory</string>
     <string name="text_widget_cuantoT">¿Cuánto tengo de inventario?</string>
+    <string name="total_invetanry">****</string>
+
 </resources>
