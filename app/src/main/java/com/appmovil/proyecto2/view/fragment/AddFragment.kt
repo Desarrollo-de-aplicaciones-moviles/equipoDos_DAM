@@ -12,11 +12,14 @@ import com.appmovil.proyecto2.databinding.FragmentAddBinding
 import android.widget.ImageView
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Toast
 import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddFragment : Fragment() {
@@ -45,7 +48,6 @@ class AddFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        controladores()
         observarCampos()
 
         val btnGuardar = binding.btnSave
@@ -53,35 +55,32 @@ class AddFragment : Fragment() {
         originalTextTypeface = btnGuardar.typeface
 
         binding.btnSave.setOnClickListener {
-            val codigo = binding.editTextCodigoProducto.text.toString().toInt()
-            val nombre = binding.editTextNombre.text.toString()
-            val precio = binding.editTextPrecio.text.toString().toInt()
-            val cantidad = binding.editTextCantidad.text.toString().toInt()
+            lifecycleScope.launch {
+                try {
+                    val codigo = binding.editTextCodigoProducto.text.toString().toInt()
+                    val nombre = binding.editTextNombre.text.toString()
+                    val precio = binding.editTextPrecio.text.toString().toInt()
+                    val cantidad = binding.editTextCantidad.text.toString().toInt()
 
-            viewModel.guardarProducto(codigo, nombre, precio, cantidad)
-        }
+                    // Llamada a guardarProducto y manejo del resultado
+                    val exitoso = viewModel.guardarProducto(codigo, nombre, precio, cantidad)
 
-        viewModel.getProductoGuardadoLiveData().observe(viewLifecycleOwner, { exitoso ->
-            if (exitoso) {
-                // Si la operación fue exitosa, navegar al fragmento del home
-                findNavController().navigate(R.id.action_addFragment_to_homeFragment)
-            } else {
-                // Si hubo un error, mostrar un Toast
-                Toast.makeText(requireContext(), "Error al guardar el producto", Toast.LENGTH_SHORT).show()
+                    if (exitoso) {
+                        // Si la operación fue exitosa, navegar al fragmento del home
+                        findNavController().navigate(R.id.action_addFragment_to_homeFragment)
+                    } else {
+                        // Si hubo un error, mostrar un Toast
+                        Toast.makeText(context, "Ha ocurrido un error al guardar el producto", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    // Manejar cualquier excepción no esperada aquí
+                    Log.e("AddFragment", "Error al intentar guardar el producto", e)
+                    Toast.makeText(context, "Ha ocurrido un error inesperado", Toast.LENGTH_SHORT).show()
+                }
             }
-        })
-    }
-
-    private fun controladores() {
-        binding.btnSave.setOnClickListener {
-            val codigo = binding.editTextCodigoProducto.text.toString().toInt()
-            val nombre = binding.editTextNombre.text.toString()
-            val precio = binding.editTextPrecio.text.toString().toInt()
-            val cantidad = binding.editTextCantidad.text.toString().toInt()
-
-            viewModel.guardarProducto(codigo, nombre, precio, cantidad)
         }
     }
+
 
     private fun observarCampos() {
         //viewModel.listarProductos().observe(viewLifecycleOwner, Observer { productos ->
@@ -132,5 +131,4 @@ class AddFragment : Fragment() {
             }
         }
     }
-
 }

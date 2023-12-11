@@ -1,92 +1,62 @@
 package com.appmovil.proyecto2.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
-import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.repository.InventoryRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.Assert.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 
+@ExperimentalCoroutinesApi
 class InventoryViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var inventoryViewModel: InventoryViewModel
+    @Mock
     private lateinit var repository: InventoryRepository
+
+    private lateinit var inventoryViewModel: InventoryViewModel
 
     @Before
     fun setup() {
-        repository = mock(InventoryRepository::class.java)
+        MockitoAnnotations.initMocks(this)
         inventoryViewModel = InventoryViewModel(repository)
     }
 
     @Test
-    fun `test metodo guardarProducto`() = runBlocking {
-        // given
-        Dispatchers.setMain(UnconfinedTestDispatcher())
-        val articulo = Articulo(codigo = 1, nombre = "Item1", precio = 10, cantidad = 5)
+    fun `test metodo guardarProducto`() = runBlockingTest {
+        //given
+        val codigo = 15
+        val nombre = "Item1"
+        val precio = 10
+        val cantidad = 5
 
-        // Simular el comportamiento del repositorio al guardar el producto
-        `when`(repository.guardarProducto(
-            eq(articulo.codigo),
-            eq(articulo.nombre),
-            eq(articulo.precio),
-            eq(articulo.cantidad),
-            any()
-        )).thenAnswer { invocation ->
-            // Devolver el artículo que se pasó como argumento al repositorio
-            val inventoryArgument = invocation.getArgument<Articulo>(3)
-            inventoryArgument
-        }
+        `when`(repository.guardarProducto(codigo, nombre, precio, cantidad))
+            .thenReturn(true)
 
         // Llamamos al método que queremos probar
-        inventoryViewModel.guardarProducto(
-            articulo.codigo,
-            articulo.nombre,
-            articulo.precio,
-            articulo.cantidad
-        )
+        val result = inventoryViewModel.guardarProducto(codigo, nombre, precio, cantidad)
 
-        // Verificamos que el estado de progreso sea falso después de la operación
-        verify(repository).guardarProducto(
-            eq(articulo.codigo),
-            eq(articulo.nombre),
-            eq(articulo.precio),
-            eq(articulo.cantidad),
-            any()
-        )
+        // Verificamos que el método en el repositorio haya sido llamado con los mismos argumentos
+        verify(repository).guardarProducto(codigo, nombre, precio, cantidad)
 
-        // Esperamos a que la operación asíncrona se complete
-        //advanceTimeBy(1000)
-
-        // Verificamos que el LiveData tiene el valor esperado (puede variar dependiendo de tu implementación)
-        assertEquals(true, inventoryViewModel.getProductoGuardadoLiveData().value)
-
-        // Restablecemos el hilo principal
-        Dispatchers.resetMain()
+        // Verificamos que el resultado sea el esperado
+        assert(result)
     }
 
 
     @Test
     fun `test metodo listarProductos`() {
-
+        // Implementa pruebas para listarProductos si es necesario
     }
-
 }
+
 
 
 
