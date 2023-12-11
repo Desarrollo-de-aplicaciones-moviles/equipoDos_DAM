@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.view.viewholder.ProductoViewHolder
+import java.text.NumberFormat
+import java.util.*
 
 class ProductosAdapter(private val context: Context, private val productList: List<Articulo>) :
     RecyclerView.Adapter<ProductoViewHolder>() {
@@ -21,11 +23,26 @@ class ProductosAdapter(private val context: Context, private val productList: Li
 
         holder.textProductName.text = product.nombre
         holder.textProductId.text = "ID: ${product.codigo}"
-        holder.textProductPrice.text = "\$${String.format("%,d", product.precio)}"
+
+        // Convertir el precio a Double antes de formatear
+        val priceAsDouble = product.precio.toDouble()
+
+        // Formatear el precio con separadores de miles y dos decimales
+        val formattedPrice = formatPrice(priceAsDouble)
+        holder.textProductPrice.text = "$formattedPrice"
     }
 
     override fun getItemCount(): Int {
         return productList.size
     }
+
+    private fun formatPrice(price: Double): String {
+        val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))
+        numberFormat.minimumFractionDigits = 2
+        numberFormat.maximumFractionDigits = 2
+
+        return "$" + numberFormat.format(price)
+    }
 }
+
 
