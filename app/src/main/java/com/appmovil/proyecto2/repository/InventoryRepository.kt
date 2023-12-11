@@ -4,12 +4,13 @@ import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.appmovil.proyecto2.model.Articulo
 import androidx.lifecycle.MutableLiveData
+import javax.inject.Inject
 
-class InventoryRepository {
-    private val db = FirebaseFirestore.getInstance()
-    private val listProductos = MutableLiveData<String>()
-
-    fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int) {
+class InventoryRepository @Inject constructor(
+    private val db: FirebaseFirestore,
+    private val listProductos: MutableLiveData<String>
+){
+    fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int, productoGuardado: MutableLiveData<Boolean>) {
         val articulo = Articulo(codigo, nombre, precio, cantidad)
 
         db.collection("articulo").document(articulo.codigo.toString()).set(
@@ -19,11 +20,15 @@ class InventoryRepository {
                 "precio" to articulo.precio,
                 "cantidad" to articulo.cantidad
             )
-        )
-
-        // Notificar que el producto se ha guardado
-        listProductos.postValue("Articulo guardado")
+        ).addOnSuccessListener {
+            // Notificar que el producto se ha guardado exitosamente
+            productoGuardado.postValue(true)
+        }.addOnFailureListener {
+            // Notificar que hubo un error al guardar el producto
+            productoGuardado.postValue(false)
+        }
     }
+
 
     fun listarProductos(): LiveData<String> {
         db.collection("articulo").get().addOnSuccessListener {

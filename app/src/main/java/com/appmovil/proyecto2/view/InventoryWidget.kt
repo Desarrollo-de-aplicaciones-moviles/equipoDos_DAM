@@ -36,4 +36,6 @@ class InventoryWidget : AppWidgetProvider() {
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
+
+
 }
