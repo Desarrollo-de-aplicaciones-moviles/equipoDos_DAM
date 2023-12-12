@@ -3,6 +3,7 @@ package com.appmovil.proyecto2.view.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.model.Articulo
@@ -10,12 +11,12 @@ import com.appmovil.proyecto2.view.viewholder.ProductoViewHolder
 import java.text.NumberFormat
 import java.util.*
 
-class ProductosAdapter(private val context: Context, private val productList: List<Articulo>) :
+class ProductosAdapter(private val context: Context, private val productList: List<Articulo>, private val navController: NavController) :
     RecyclerView.Adapter<ProductoViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductoViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_inventory, parent, false)
-        return ProductoViewHolder(view)
+        return ProductoViewHolder(view, navController)
     }
 
     override fun onBindViewHolder(holder: ProductoViewHolder, position: Int) {
@@ -30,6 +31,9 @@ class ProductosAdapter(private val context: Context, private val productList: Li
         // Formatear el precio con separadores de miles y dos decimales
         val formattedPrice = formatPrice(priceAsDouble)
         holder.textProductPrice.text = "$formattedPrice"
+
+        holder.setItemInventory(product)
+
     }
 
     override fun getItemCount(): Int {

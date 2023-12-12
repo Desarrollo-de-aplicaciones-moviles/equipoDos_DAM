@@ -20,8 +20,4 @@ class InventoryViewModel @Inject constructor(
     fun listarProductos(): LiveData<String> {
         return repository.listarProductos()
     }
-
-    fun getInventoryList(): LiveData<MutableList<Articulo>> {
-        return repository.getInventory()
-    }
 }

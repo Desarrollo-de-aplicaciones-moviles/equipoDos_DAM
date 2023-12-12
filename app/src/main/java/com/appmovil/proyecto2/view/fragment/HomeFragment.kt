@@ -7,12 +7,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.appmovil.proyecto2.view.adapter.ProductosAdapter
@@ -22,7 +19,6 @@ import com.appmovil.proyecto2.databinding.FragmentHomeBinding
 import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.view.HomeActivity
 import com.appmovil.proyecto2.view.LoginActivity
-import com.appmovil.proyecto2.view.adapter.InventoryAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
@@ -53,10 +49,6 @@ class HomeFragment : Fragment() {
         sharedPreferences = requireActivity().getSharedPreferences("shared", Context.MODE_PRIVATE)
         dataLogin()
         controladores()
-
-        val navController = Navigation.findNavController(view)
-
-        observerViewModel(navController)
         setupRecyclerView()
     }
 
@@ -70,7 +62,7 @@ class HomeFragment : Fragment() {
             // Parsea la cadena de productos y crea una lista de objetos Articulo
             val productList = parseProductList(productos)
 
-            val adapter = ProductosAdapter(requireContext(), productList)
+            val adapter = ProductosAdapter(requireContext(), productList, findNavController())
             recyclerView.adapter = adapter
         })
     }
@@ -133,24 +125,6 @@ class HomeFragment : Fragment() {
                 //activity?.onBackPressedDispatcher?.onBackPressed()
                 logOut()
             }.start()
-        }
-
-
-    }
-
-    private fun observerViewModel(navController: NavController) {
-        observerListInventory(navController)
-    }
-
-    private fun observerListInventory(navController: NavController) {
-
-        inventoryViewModel.getInventoryList().observe(viewLifecycleOwner){ itemsList->
-            val recycler = binding.recyclerViewProductos
-            val layoutManager = LinearLayoutManager(context)
-            recycler.layoutManager = layoutManager
-            val adapter = InventoryAdapter(itemsList, navController)
-            recycler.adapter = adapter
-            adapter.notifyDataSetChanged()
         }
 
     }
