@@ -10,7 +10,9 @@ import javax.inject.Inject
 
 class InventoryRepository @Inject constructor(
     private val db: FirebaseFirestore,
-    private val listProductos: MutableLiveData<String>
+    private val listProductos: MutableLiveData<String>,
+    private val inventoryList: MutableLiveData<MutableList<Articulo>>
+
 ) {
     suspend fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
         return try {

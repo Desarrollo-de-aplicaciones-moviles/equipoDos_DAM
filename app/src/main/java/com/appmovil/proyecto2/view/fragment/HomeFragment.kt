@@ -23,11 +23,11 @@ import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.view.HomeActivity
 import com.appmovil.proyecto2.view.LoginActivity
 import com.appmovil.proyecto2.view.adapter.InventoryAdapter
-import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.appmovil.proyecto2.model.Articulo
 import android.util.Log
+import android.widget.ImageView
+import com.appmovil.proyecto2.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,7 +52,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences = requireActivity().getSharedPreferences("shared", Context.MODE_PRIVATE)
         dataLogin()
-        setup()
         controladores()
 
         val navController = Navigation.findNavController(view)
@@ -107,14 +106,6 @@ class HomeFragment : Fragment() {
         return productList
     }
 
-
-
-    private fun setup() {
-        /*binding.btnLogOut.setOnClickListener {
-            logOut()
-        }*/
-    }
-
     private fun dataLogin() {
         val bundle = requireActivity().intent.extras
         val email = bundle?.getString("email")
@@ -134,6 +125,17 @@ class HomeFragment : Fragment() {
         binding.fbagregar.setOnClickListener {
             findNavController().navigate(com.appmovil.proyecto2.R.id.action_homeFragment_to_addFragment)
         }
+
+        val btnLogOut: ImageView = binding.root.findViewById(R.id.btnLogOut)
+        btnLogOut.setOnClickListener {
+            it.animate().scaleX(0.8f).scaleY(0.8f).setDuration(200).withEndAction {
+                it.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+                //activity?.onBackPressedDispatcher?.onBackPressed()
+                logOut()
+            }.start()
+        }
+
+
     }
 
     private fun observerViewModel(navController: NavController) {
@@ -143,7 +145,7 @@ class HomeFragment : Fragment() {
     private fun observerListInventory(navController: NavController) {
 
         inventoryViewModel.getInventoryList().observe(viewLifecycleOwner){ itemsList->
-            val recycler = binding.recyclerview
+            val recycler = binding.recyclerViewProductos
             val layoutManager = LinearLayoutManager(context)
             recycler.layoutManager = layoutManager
             val adapter = InventoryAdapter(itemsList, navController)

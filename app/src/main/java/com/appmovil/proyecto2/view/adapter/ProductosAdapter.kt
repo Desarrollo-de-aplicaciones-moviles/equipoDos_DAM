@@ -22,7 +22,7 @@ class ProductosAdapter(private val context: Context, private val productList: Li
         val product = productList[position]
 
         holder.textProductName.text = product.nombre
-        holder.textProductId.text = "ID: ${product.codigo}"
+        holder.textProductQty.text = "Cant: ${product.cantidad}"
 
         // Convertir el precio a Double antes de formatear
         val priceAsDouble = product.precio.toDouble()

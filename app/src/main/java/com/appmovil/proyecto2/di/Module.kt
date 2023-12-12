@@ -1,6 +1,7 @@
 package com.appmovil.proyecto2.di
 
 import androidx.lifecycle.MutableLiveData
+import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.repository.InventoryRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
@@ -27,7 +28,13 @@ object Module {
 
     @Provides
     @Singleton
-    fun provideInventoryRepository(db: FirebaseFirestore, listProductos: MutableLiveData<String>): InventoryRepository {
-        return InventoryRepository(db, listProductos)
+    fun provideInventoryList(): MutableLiveData<MutableList<Articulo>> {
+        return MutableLiveData()
+    }
+
+    @Provides
+    @Singleton
+    fun provideInventoryRepository(db: FirebaseFirestore, listProductos: MutableLiveData<String>, inventoryList:MutableLiveData<MutableList<Articulo>>): InventoryRepository {
+        return InventoryRepository(db, listProductos, inventoryList)
     }
 }
