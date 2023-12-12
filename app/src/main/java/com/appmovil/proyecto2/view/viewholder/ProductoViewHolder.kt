@@ -34,16 +34,22 @@ class ProductoViewHolder (itemView: View,navController: NavController) : Recycle
         cvItem.setOnClickListener {
             val bundle = Bundle()
             bundle.putSerializable("clave", item)
-            //navController.navigate(R.id.action_homeFragment_to_detailsFragment,bundle)
-            Toast.makeText(itemView.context, "Articulo:  ${item.nombre}", Toast.LENGTH_SHORT).show()
+
+            /*cvItem.startAnimation(
+                AnimationUtils.loadAnimation(
+                    cvItem.context,
+                    R.anim.scale_item
+                )
+            )*/
+
+            it.animate().scaleX(0.8f).scaleY(0.8f).setDuration(200).withEndAction {
+                it.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+                //navController.navigate(R.id.action_homeFragment_to_detailsFragment,bundle)
+                Toast.makeText(itemView.context, "Articulo:  ${item.nombre}", Toast.LENGTH_SHORT).show()
+            }.start()
         }
 
-        cvItem.startAnimation(
-            AnimationUtils.loadAnimation(
-                cvItem.context,
-                R.anim.scale_item
-            )
-        )
+
     }
     private fun formatPrice(price: Double): String {
         val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))

@@ -55,6 +55,13 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         viewModel.listarProductos().observe(viewLifecycleOwner, Observer { productos ->
 
+            val progressBar = binding.progressBarHome
+            val recyclerViewProductos = binding.recyclerViewProductos
+
+            progressBar.visibility = View.VISIBLE
+            recyclerViewProductos.visibility = View.GONE
+
+
             val recyclerView = binding.recyclerViewProductos
             val layoutManager = LinearLayoutManager(requireContext())
             recyclerView.layoutManager = layoutManager
@@ -64,6 +71,10 @@ class HomeFragment : Fragment() {
 
             val adapter = ProductosAdapter(requireContext(), productList, findNavController())
             recyclerView.adapter = adapter
+
+            progressBar.visibility = View.GONE
+            recyclerViewProductos.visibility = View.VISIBLE
+
         })
     }
 
