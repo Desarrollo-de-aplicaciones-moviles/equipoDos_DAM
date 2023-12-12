@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -15,13 +16,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.databinding.ActivityLoginBinding
 import com.appmovil.proyecto2.viewmodel.LoginViewModel
 import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private val loginViewModel: LoginViewModel by viewModels()
@@ -40,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable?) {
-                validateLoginButton()
+                validateFields()
             }
         })
 
@@ -54,12 +56,12 @@ class LoginActivity : AppCompatActivity() {
                 val tilPass = binding.tilPass
                 val etPass = binding.etPass
 
-                validateLoginButton()
+                validateFields()
 
                 if (passwordLength < 6) {
-                    val colorOrange = ContextCompat.getColor(this@LoginActivity, R.color.orange)
-                    binding.tilPass.boxStrokeColor = colorOrange
-                    binding.tilPass.defaultHintTextColor = ColorStateList.valueOf(colorOrange)
+                    val colorRed = ContextCompat.getColor(this@LoginActivity, R.color.red)
+                    binding.tilPass.boxStrokeColor = colorRed
+                    binding.tilPass.defaultHintTextColor = ColorStateList.valueOf(colorRed)
                     tvPasswordError.visibility = View.VISIBLE
                 } else {
                     val colorDefault = ContextCompat.getColor(this@LoginActivity, R.color.white)
@@ -88,8 +90,9 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    private fun validateLoginButton() {
+    private fun validateFields() {
         val btnLogin = binding.btnLogin
+        val btnRegister = binding.tvRegister
         val email = binding.etEmail.text.toString().trim()
         val password = binding.etPass.text.toString().trim()
 
@@ -98,10 +101,22 @@ class LoginActivity : AppCompatActivity() {
 
         if (isEmailValid && isPasswordValid) {
             btnLogin.isEnabled = true
-            btnLogin.setBackgroundColor(ContextCompat.getColor(this@LoginActivity, R.color.orange))
+            btnLogin.setTypeface(null, Typeface.BOLD)
+            btnLogin.setTextColor(ContextCompat.getColor(this@LoginActivity, R.color.white))
+            //btnLogin.setBackgroundColor(ContextCompat.getColor(this@LoginActivity, R.color.orange))
+
+            btnRegister.isEnabled = true
+            btnRegister.setTypeface(null, Typeface.BOLD)
+            btnRegister.setTextColor(ContextCompat.getColor(this@LoginActivity, R.color.white))
         } else {
             btnLogin.isEnabled = false
-            btnLogin.setBackgroundColor(ContextCompat.getColor(this@LoginActivity, R.color.orange_disabled))
+            btnLogin.setTypeface(null, Typeface.NORMAL)
+            btnLogin.setTextColor(ContextCompat.getColor(this@LoginActivity, R.color.gray))
+            //btnLogin.setBackgroundColor(ContextCompat.getColor(this@LoginActivity, R.color.orange_disabled))
+
+            btnRegister.isEnabled = false
+            btnRegister.setTypeface(null, Typeface.NORMAL)
+            btnRegister.setTextColor(ContextCompat.getColor(this@LoginActivity, R.color.gray))
         }
     }
     private fun setup() {
