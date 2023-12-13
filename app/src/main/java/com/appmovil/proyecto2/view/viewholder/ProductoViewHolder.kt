@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.findNavController
 import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.model.Articulo
 import java.text.NumberFormat
@@ -18,6 +19,20 @@ class ProductoViewHolder (itemView: View,navController: NavController) : Recycle
     val textProductQty: TextView = itemView.findViewById(R.id.tvItemQty)
     val textProductPrice: TextView = itemView.findViewById(R.id.tvItemPrice)
     val cvItem: CardView = itemView.findViewById(R.id.cvItem)
+    
+    val cvChallenges: CardView = itemView.findViewById(R.id.cvChallenges)
+
+    init {
+        cvChallenges.setOnClickListener {
+            val bundle = Bundle()
+            val idString = textProductId.text.toString()
+            val idNumber = idString.replace("ID: ", "").trim().toInt()
+            val priceString = textProductPrice.text.toString()
+            val priceNumber = priceString.replace("$", "").replace(",", "").trim().toInt()
+
+            bundle.putSerializable("articulo", Articulo(idNumber, textProductName.text.toString(), priceNumber, 1))
+            it.findNavController().navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
+        }
 
     val navController = navController
     fun setItemInventory(item: Articulo) {

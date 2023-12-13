@@ -7,4 +7,4 @@ data class Articulo(
     val nombre: String,
     val precio:Int,
     val cantidad:Int
-) : Serializable
+): Serializable

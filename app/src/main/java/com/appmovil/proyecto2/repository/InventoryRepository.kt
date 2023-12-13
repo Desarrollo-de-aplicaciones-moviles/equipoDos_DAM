@@ -45,6 +45,31 @@ class InventoryRepository @Inject constructor(
         }
         return listProductos
     }
+
+    fun actualizarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int, productoActualizado: MutableLiveData<Boolean>) {
+        db.collection("articulo").document(codigo.toString()).update(
+            hashMapOf(
+                "nombre" to nombre,
+                "precio" to precio,
+                "cantidad" to cantidad
+            ) as Map<String, Any>
+        ).addOnSuccessListener {
+            // Notificar que el producto se ha actualizado exitosamente
+            productoActualizado.postValue(true)
+        }.addOnFailureListener {
+            // Notificar que hubo un error al actualizar el producto
+            productoActualizado.postValue(false)
+        }
+    }
+
+    fun eliminarProducto(codigo: Int, productoEliminado: MutableLiveData<Boolean>) {
+        db.collection("articulo").document(codigo.toString()).delete().addOnSuccessListener {
+            // Notificar que el producto se ha eliminado exitosamente
+            productoEliminado.postValue(true)
+        }.addOnFailureListener {
+            // Notificar que hubo un error al eliminar el producto
+            productoEliminado.postValue(false)
+        }
     fun getInventory(): LiveData<MutableList<Articulo>> {
         db.collection("articulo").get().addOnSuccessListener {
             var data:MutableList<Articulo> = mutableListOf()

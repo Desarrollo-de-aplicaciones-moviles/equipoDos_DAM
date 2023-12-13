@@ -12,6 +12,9 @@ import javax.inject.Inject
 class InventoryViewModel @Inject constructor(
     private val repository: InventoryRepository
 ) : ViewModel() {
+    private val productoGuardado = MutableLiveData<Boolean>()
+    private val productoActualizado = MutableLiveData<Boolean>()
+    private val productoEliminado = MutableLiveData<Boolean>()
 
     suspend fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
         return repository.guardarProducto(codigo, nombre, precio, cantidad)
@@ -19,5 +22,19 @@ class InventoryViewModel @Inject constructor(
 
     fun listarProductos(): LiveData<String> {
         return repository.listarProductos()
+    }
+
+    fun actualizarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
+        repository.actualizarProducto(codigo, nombre, precio, cantidad, productoActualizado)
+        return productoActualizado.value ?: false
+    }
+
+    fun eliminarProducto(codigo: Int): Boolean {
+        repository.eliminarProducto(codigo, productoEliminado)
+        return productoEliminado.value ?: false
+    }
+
+    fun calcularValorTotalProducto(precio: Int, cantidad: Int): Int {
+        return precio * cantidad
     }
 }
