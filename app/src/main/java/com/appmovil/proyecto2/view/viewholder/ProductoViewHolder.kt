@@ -19,20 +19,6 @@ class ProductoViewHolder (itemView: View,navController: NavController) : Recycle
     val textProductQty: TextView = itemView.findViewById(R.id.tvItemQty)
     val textProductPrice: TextView = itemView.findViewById(R.id.tvItemPrice)
     val cvItem: CardView = itemView.findViewById(R.id.cvItem)
-    
-    val cvChallenges: CardView = itemView.findViewById(R.id.cvChallenges)
-
-    init {
-        cvChallenges.setOnClickListener {
-            val bundle = Bundle()
-            val idString = textProductId.text.toString()
-            val idNumber = idString.replace("ID: ", "").trim().toInt()
-            val priceString = textProductPrice.text.toString()
-            val priceNumber = priceString.replace("$", "").replace(",", "").trim().toInt()
-
-            bundle.putSerializable("articulo", Articulo(idNumber, textProductName.text.toString(), priceNumber, 1))
-            it.findNavController().navigate(R.id.action_homeFragment_to_detailsFragment, bundle)
-        }
 
     val navController = navController
     fun setItemInventory(item: Articulo) {
@@ -50,16 +36,9 @@ class ProductoViewHolder (itemView: View,navController: NavController) : Recycle
             val bundle = Bundle()
             bundle.putSerializable("clave", item)
 
-            /*cvItem.startAnimation(
-                AnimationUtils.loadAnimation(
-                    cvItem.context,
-                    R.anim.scale_item
-                )
-            )*/
-
             it.animate().scaleX(0.8f).scaleY(0.8f).setDuration(200).withEndAction {
                 it.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
-                //navController.navigate(R.id.action_homeFragment_to_detailsFragment,bundle)
+                navController.navigate(R.id.action_homeFragment_to_detailsFragment,bundle)
                 Toast.makeText(itemView.context, "Articulo:  ${item.nombre}", Toast.LENGTH_SHORT).show()
             }.start()
         }
