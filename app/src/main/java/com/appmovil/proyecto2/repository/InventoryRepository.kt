@@ -85,4 +85,4 @@ class InventoryRepository @Inject constructor(
         }
         return inventoryList
     }
-}
+}}

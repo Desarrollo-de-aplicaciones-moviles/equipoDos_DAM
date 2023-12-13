@@ -48,9 +48,9 @@ class DetailsFragment : Fragment() {
         }
     }
    @SuppressLint("SetTextI18n")
-   private fun dataArticulo() {
+    private fun dataArticulo() {
         val receivedBundle = arguments
-        receivedArticulo = receivedBundle?.getSerializable("articulo") as? Articulo ?: return
+        receivedArticulo = receivedBundle?.getSerializable("clave") as? Articulo ?: return
         binding.tvItem.text = receivedArticulo.nombre
         binding.tvPrice.text = "$ ${receivedArticulo.precio}"
         binding.tvQuantity.text = "${receivedArticulo.cantidad}"
