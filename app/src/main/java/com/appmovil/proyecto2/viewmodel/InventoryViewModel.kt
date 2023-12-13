@@ -27,17 +27,17 @@ class InventoryViewModel @Inject constructor(
         return repository.listarProductos()
     }
 
-    suspend fun actualizarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
+    fun actualizarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
         repository.actualizarProducto(codigo, nombre, precio, cantidad, productoActualizado)
         return productoActualizado.value ?: false
     }
 
-    suspend fun eliminarProducto(codigo: Int): Boolean {
+    fun eliminarProducto(codigo: Int): Boolean {
         repository.eliminarProducto(codigo, productoEliminado)
         return productoEliminado.value ?: false
     }
 
-    suspend fun calcularValorTotalProducto(precio: Int, cantidad: Int): Int {
+    fun calcularValorTotalProducto(precio: Int, cantidad: Int): Int {
         return precio * cantidad
     }
 }
