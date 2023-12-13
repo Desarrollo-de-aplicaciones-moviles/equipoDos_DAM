@@ -7,27 +7,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.appmovil.proyecto2.view.adapter.ProductosAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.appmovil.proyecto2.databinding.FragmentHomeBinding
+import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.view.HomeActivity
 import com.appmovil.proyecto2.view.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.appmovil.proyecto2.model.Articulo
 import android.util.Log
+import android.widget.ImageView
+import com.appmovil.proyecto2.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var sharedPreferences: SharedPreferences
+    private val inventoryViewModel: InventoryViewModel by viewModels()
     private val db = FirebaseFirestore.getInstance()
     private lateinit var viewModel: InventoryViewModel
 
@@ -45,13 +48,19 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences = requireActivity().getSharedPreferences("shared", Context.MODE_PRIVATE)
         dataLogin()
-        setup()
         controladores()
         setupRecyclerView()
     }
 
     private fun setupRecyclerView() {
         viewModel.listarProductos().observe(viewLifecycleOwner, Observer { productos ->
+
+            val progressBar = binding.progressBarHome
+            val recyclerViewProductos = binding.recyclerViewProductos
+
+            progressBar.visibility = View.VISIBLE
+            recyclerViewProductos.visibility = View.GONE
+
 
             val recyclerView = binding.recyclerViewProductos
             val layoutManager = LinearLayoutManager(requireContext())
@@ -60,8 +69,12 @@ class HomeFragment : Fragment() {
             // Parsea la cadena de productos y crea una lista de objetos Articulo
             val productList = parseProductList(productos)
 
-            val adapter = ProductosAdapter(requireContext(), productList)
+            val adapter = ProductosAdapter(requireContext(), productList, findNavController())
             recyclerView.adapter = adapter
+
+            progressBar.visibility = View.GONE
+            recyclerViewProductos.visibility = View.VISIBLE
+
         })
     }
 
@@ -96,14 +109,6 @@ class HomeFragment : Fragment() {
         return productList
     }
 
-
-
-    private fun setup() {
-        binding.btnLogOut.setOnClickListener {
-            logOut()
-        }
-    }
-
     private fun dataLogin() {
         val bundle = requireActivity().intent.extras
         val email = bundle?.getString("email")
@@ -123,6 +128,16 @@ class HomeFragment : Fragment() {
         binding.fbagregar.setOnClickListener {
             findNavController().navigate(com.appmovil.proyecto2.R.id.action_homeFragment_to_addFragment)
         }
+
+        val btnLogOut: ImageView = binding.root.findViewById(R.id.btnLogOut)
+        btnLogOut.setOnClickListener {
+            it.animate().scaleX(0.8f).scaleY(0.8f).setDuration(200).withEndAction {
+                it.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+                //activity?.onBackPressedDispatcher?.onBackPressed()
+                logOut()
+            }.start()
+        }
+
     }
 
 }

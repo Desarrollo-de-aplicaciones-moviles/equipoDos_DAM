@@ -5,6 +5,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tituloTooladd">Agregar producto</string>
     <string name="tituloToolDetails">Detalles del producto</string>
+    <string name="tituloToolbarHome">Inventario</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="appwidget_img">logo</string>
     <string name="add_widget">Add widget</string>

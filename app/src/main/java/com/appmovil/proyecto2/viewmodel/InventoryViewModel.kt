@@ -3,6 +3,7 @@ package com.appmovil.proyecto2.viewmodel
 import androidx.lifecycle.ViewModel
 import com.appmovil.proyecto2.repository.InventoryRepository
 import androidx.lifecycle.LiveData
+import com.appmovil.proyecto2.model.Articulo
 import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,12 +16,8 @@ class InventoryViewModel @Inject constructor(
     private val productoActualizado = MutableLiveData<Boolean>()
     private val productoEliminado = MutableLiveData<Boolean>()
 
-    fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int) {
-        repository.guardarProducto(codigo, nombre, precio, cantidad, productoGuardado)
-    }
-
-    fun getProductoGuardadoLiveData(): LiveData<Boolean> {
-        return productoGuardado
+    suspend fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
+        return repository.guardarProducto(codigo, nombre, precio, cantidad)
     }
 
     fun listarProductos(): LiveData<String> {
