@@ -46,6 +46,11 @@ class DetailsFragment : Fragment() {
         binding.btnDelete.setOnClickListener {
             deleteArticulo()
         }
+        binding.btnEdit.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putSerializable("clave", receivedArticulo)
+            findNavController().navigate(R.id.action_detailsFragment_to_editFragment, bundle)
+        }
     }
    @SuppressLint("SetTextI18n")
     private fun dataArticulo() {
