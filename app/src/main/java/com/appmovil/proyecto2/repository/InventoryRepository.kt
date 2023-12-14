@@ -2,9 +2,9 @@ package com.appmovil.proyecto2.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.google.firebase.firestore.FirebaseFirestore
-import com.appmovil.proyecto2.model.Articulo
 import androidx.lifecycle.MutableLiveData
+import com.appmovil.proyecto2.model.Articulo
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -31,6 +31,7 @@ class InventoryRepository @Inject constructor(
             false
         }
     }
+
     fun listarProductos(): LiveData<String> {
         db.collection("articulo").get().addOnSuccessListener {
             var data = ""
@@ -46,7 +47,13 @@ class InventoryRepository @Inject constructor(
         return listProductos
     }
 
-    fun actualizarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int, productoActualizado: MutableLiveData<Boolean>) {
+    fun actualizarProducto(
+        codigo: Int,
+        nombre: String,
+        precio: Int,
+        cantidad: Int,
+        productoActualizado: MutableLiveData<Boolean>
+    ) {
         db.collection("articulo").document(codigo.toString()).update(
             hashMapOf(
                 "nombre" to nombre,
@@ -70,19 +77,40 @@ class InventoryRepository @Inject constructor(
             // Notificar que hubo un error al eliminar el producto
             productoEliminado.postValue(false)
         }
-    fun getInventory(): LiveData<MutableList<Articulo>> {
-        db.collection("articulo").get().addOnSuccessListener {
-            var data:MutableList<Articulo> = mutableListOf()
-            for (document in it.documents) {
-                val item = Articulo(document.get("codigo").toString().toInt()
-                    ,document.get("nombre").toString()
-                    ,document.get("precio").toString().toInt()
-                    ,document.get("cantidad").toString().toInt())
-                data.add(item)
+        fun getInventory(): LiveData<MutableList<Articulo>> {
+            db.collection("articulo").get().addOnSuccessListener {
+                var data: MutableList<Articulo> = mutableListOf()
+                for (document in it.documents) {
+                    val item = Articulo(
+                        document.get("codigo").toString().toInt(),
+                        document.get("nombre").toString(),
+                        document.get("precio").toString().toInt(),
+                        document.get("cantidad").toString().toInt()
+                    )
+                    data.add(item)
+                }
+                // Notificar la lista de productos
+                inventoryList.value = data
             }
-            // Notificar la lista de productos
-            inventoryList.value = data
+            return inventoryList
         }
-        return inventoryList
     }
-}}
+
+    fun totalInventario(): LiveData<Double> {
+        val totalLiveData = MutableLiveData<Double>()
+
+        db.collection("articulo").get().addOnSuccessListener { querySnapshot ->
+            var totalInventario = 0.0
+
+            for (document in querySnapshot.documents) {
+                val precio = document.get("precio") as? Double ?: 0.0
+                val cantidad = document.get("cantidad") as? Int ?: 0
+
+                totalInventario += precio * cantidad
+            }
+            totalLiveData.postValue(totalInventario)
+        }
+
+        return totalLiveData
+    }
+}
