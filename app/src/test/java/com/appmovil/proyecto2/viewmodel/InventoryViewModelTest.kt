@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import com.appmovil.proyecto2.repository.InventoryRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,7 +38,7 @@ class InventoryViewModelTest {
         //given
         val codigo = 15
         val nombre = "Item1"
-        val precio = 10
+        val precio = 10.0
         val cantidad = 5
 
         `when`(repository.guardarProducto(codigo, nombre, precio, cantidad))
@@ -78,39 +79,82 @@ class InventoryViewModelTest {
 
     @Test
     fun `test metodo actualizarProducto`() = runBlockingTest {
-        // Given
+        //given
         val codigo = 15
-        val nombre = "Item1"
-        val precio = 10.0
-        val cantidad = 5
+        val nombre = "NuevoNombre"
+        val precio = 20.0
+        val cantidad = 8
+
         `when`(repository.actualizarProducto(codigo, nombre, precio, cantidad, inventoryViewModel.productoActualizado))
-            .thenReturn(Unit)
+            .thenAnswer {
+                inventoryViewModel.productoActualizado.postValue(true)
+            }
 
-        // When
-        inventoryViewModel.actualizarProducto(codigo, nombre, precio, cantidad)
+        // Llamamos al método que queremos probar
+        val result = inventoryViewModel.actualizarProducto(codigo, nombre, precio, cantidad)
 
-        // Then
+        // Verificamos que el método en el repositorio haya sido llamado con los mismos argumentos
         verify(repository).actualizarProducto(codigo, nombre, precio, cantidad, inventoryViewModel.productoActualizado)
 
-        // Verificamos que productoActualizado sea true
-        assert(inventoryViewModel.productoActualizado.value == true)
+        // Verificamos que el resultado sea el esperado
+        assert(result)
+        // Verificamos que el LiveData en el ViewModel ha sido actualizado
+        assertEquals(true, inventoryViewModel.productoActualizado.value)
     }
 
     @Test
     fun `test metodo eliminarProducto`() = runBlockingTest {
-        // Given
+        //given
         val codigo = 15
+
         `when`(repository.eliminarProducto(codigo, inventoryViewModel.productoEliminado))
-            .thenReturn(Unit)
+            .thenAnswer {
+                inventoryViewModel.productoEliminado.postValue(true)
+            }
 
-        // When
-        inventoryViewModel.eliminarProducto(codigo)
+        // Llamamos al método que queremos probar
+        val result = inventoryViewModel.eliminarProducto(codigo)
 
-        // Then
+        // Verificamos que el método en el repositorio haya sido llamado con los mismos argumentos
         verify(repository).eliminarProducto(codigo, inventoryViewModel.productoEliminado)
 
-        // Verificamos que productoEliminado sea true
-        assert(inventoryViewModel.productoEliminado.value == true)
+        // Verificamos que el resultado sea el esperado
+        assert(result)
+        // Verificamos que el LiveData en el ViewModel ha sido actualizado
+        assertEquals(true, inventoryViewModel.productoEliminado.value)
+    }
+
+    @Test
+    fun `test metodo calcularValorTotalProducto`() {
+        // Given
+        val precio = 10.0
+        val cantidad = 5
+
+        // When
+        val result = inventoryViewModel.calcularValorTotalProducto(precio, cantidad)
+
+        // Then
+        assertEquals(50.0, result,0.001)
+    }
+
+    @Test
+    fun `test metodo obtenerTotalProductos`() {
+        // Simula la respuesta del repositorio
+        val totalMock = MutableLiveData<Double>()
+        totalMock.value = 100.0
+        `when`(repository.totalInventario()).thenReturn(totalMock)
+
+        // Observador para el LiveData que se espera sea actualizado
+        val observer = mock(Observer::class.java) as Observer<Double>
+
+        // Observar el LiveData y verificar si se actualiza correctamente
+        inventoryViewModel.obtenerTotalProductos().observeForever(observer)
+
+        // Verifica que el método en el repositorio haya sido llamado
+        verify(repository).totalInventario()
+
+        // Verifica que el LiveData en el ViewModel ha sido actualizado con la data simulada
+        verify(observer).onChanged(100.0)
     }
 }
 

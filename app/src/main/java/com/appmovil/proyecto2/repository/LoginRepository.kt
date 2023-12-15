@@ -1,8 +1,9 @@
 package com.appmovil.proyecto2.repository
 
 import com.google.firebase.auth.FirebaseAuth
+import javax.inject.Inject
 
-class LoginRepository {
+class LoginRepository @Inject constructor(){
     private val firebaseAuth = FirebaseAuth.getInstance()
 
     fun registerUser(email: String, pass:String, isRegisterComplete: (Boolean)->Unit){
