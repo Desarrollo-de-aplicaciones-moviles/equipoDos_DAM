@@ -16,19 +16,19 @@ import java.util.Locale
 
 class ProductoViewHolder (itemView: View,navController: NavController) : RecyclerView.ViewHolder(itemView) {
     val textProductName: TextView = itemView.findViewById(R.id.tvItemName)
-    val textProductQty: TextView = itemView.findViewById(R.id.tvItemQty)
+    //val textProductQty: TextView = itemView.findViewById(R.id.tvItemQty)
+    val textProductId: TextView = itemView.findViewById(R.id.tvItemId)
     val textProductPrice: TextView = itemView.findViewById(R.id.tvItemPrice)
     val cvItem: CardView = itemView.findViewById(R.id.cvItem)
 
     val navController = navController
     fun setItemInventory(item: Articulo) {
         textProductName.text = item.nombre
-        textProductQty.text = "Cant: ${item.cantidad}"
-
-        val priceAsDouble = item.precio.toDouble()
+        //textProductQty.text = "Cant: ${item.cantidad}"
+        textProductId.text = "Id: ${item.codigo}"
 
         // Formatear el precio con separadores de miles y dos decimales
-        val formattedPrice = formatPrice(priceAsDouble)
+        val formattedPrice = formatPrice(item.precio)
         textProductPrice.text = "$formattedPrice"
 
 

@@ -23,13 +23,11 @@ class ProductosAdapter(private val context: Context, private val productList: Li
         val product = productList[position]
 
         holder.textProductName.text = product.nombre
-        holder.textProductQty.text = "Cant: ${product.cantidad}"
-
-        // Convertir el precio a Double antes de formatear
-        val priceAsDouble = product.precio.toDouble()
+        //holder.textProductQty.text = "Cant: ${product.cantidad}"
+        holder.textProductId.text = "Id: ${product.codigo}"
 
         // Formatear el precio con separadores de miles y dos decimales
-        val formattedPrice = formatPrice(priceAsDouble)
+        val formattedPrice = formatPrice(product.precio)
         holder.textProductPrice.text = "$formattedPrice"
 
         holder.setItemInventory(product)
