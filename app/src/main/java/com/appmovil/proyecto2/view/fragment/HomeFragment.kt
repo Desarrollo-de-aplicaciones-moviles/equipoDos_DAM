@@ -114,7 +114,7 @@ class HomeFragment : Fragment() {
         val closeApp = sharedPreferences.getBoolean("closeApp", false)
         if (closeApp) {
             sharedPreferences.edit().remove("closeApp").apply()
-            viewModel.obtenerTotalProductos().observe(this, Observer {
+            viewModel.obtenerTotalProductos().observe(viewLifecycleOwner, Observer {
                 val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))
                 numberFormat.minimumFractionDigits = 2
                 numberFormat.maximumFractionDigits = 2
