@@ -127,14 +127,13 @@ class InventoryWidget : AppWidgetProvider() {
             visibilityTotal: Boolean,
             totalInventario: String
         ) {
-            Log.d("mensaLog", "estoy aqui sup")
             val views: RemoteViews = RemoteViews(
                 context.packageName, R.layout.inventory_widget
             ).apply {
-                setCharSequence(R.id.txtTotalProductos, "setText", totalInventario)
+                setCharSequence(R.id.txtTotalProductos, "setText", if (visibilityTotal) totalInventario else "****")
                 setImageViewResource(
                     R.id.visibility,
-                    R.drawable.visibility_off_24
+                    if (visibilityTotal) R.drawable.visibility_off_24 else R.drawable.visibility_24
                 )
             }
             appWidgetManager.updateAppWidget(widgetId, views)

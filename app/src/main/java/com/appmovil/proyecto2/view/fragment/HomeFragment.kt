@@ -88,11 +88,23 @@ class HomeFragment : Fragment() {
             numberFormat.minimumFractionDigits = 2
             numberFormat.maximumFractionDigits = 2
 
-            sharedPreferences.edit().putBoolean("visibilityTotal", true).apply()
+
 
             sharedPreferences.edit()
                 .putString("totalInventario", numberFormat.format(it).toString())
                 .apply()
+            val widgetManager = AppWidgetManager.getInstance(requireContext())
+            val widgetIds = widgetManager.getAppWidgetIds(ComponentName(requireContext(),InventoryWidget::class.java))
+            val visibilityTotal = sharedPreferences.getBoolean("visibilityTotal", false)
+            widgetIds.forEach { widgetId ->
+                InventoryWidget.updateWidget(
+                    requireContext(),
+                    widgetManager,
+                    widgetId,
+                    visibilityTotal,
+                    numberFormat.format(it).toString()
+                )
+            }
         })
 
 
