@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat.startActivity
 import com.appmovil.proyecto2.R
 
 class InventoryWidget : AppWidgetProvider() {
@@ -44,20 +45,11 @@ class InventoryWidget : AppWidgetProvider() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val pendingIntentHome: PendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                Intent(context, HomeActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
             val views: RemoteViews = RemoteViews(
                 context.packageName, R.layout.inventory_widget
             ).apply {
                 setOnClickPendingIntent(R.id.visibility, pendingIntentWid(context, "clickWibget"))
                 setOnClickPendingIntent(R.id.gestionarIcon, pendingIntentLogin)
-                //setCharSequence(R.id.gestionarText, "setText", viewModel.obtenerTotalProductos().toString())
-
             }
 
 
@@ -72,21 +64,43 @@ class InventoryWidget : AppWidgetProvider() {
         val sharedPreferences = context!!.getSharedPreferences("shared", Context.MODE_PRIVATE)
         val email = sharedPreferences.getString("email", null)
         val totalInventario = sharedPreferences.getString("totalInventario", "0") ?: "0"
+        val visibilityTotal = sharedPreferences.getBoolean("visibilityTotal", false)
         if (context !== null && action == "clickWibget") {
-
+            val appWidgetManager = AppWidgetManager.getInstance(context)
             if (email !== null) {
-                Log.d("mensaLog", "este es el email: " + email)
-                val appWidgetManager = AppWidgetManager.getInstance(context)
                 appWidgetManager.getAppWidgetIds(ComponentName(context, javaClass)).forEach {
                     val views: RemoteViews = RemoteViews(
                         context?.packageName, R.layout.inventory_widget
                     ).apply {
-                        setCharSequence(R.id.txtTotalProductos, "setText", totalInventario)
+                        if(!visibilityTotal){
+                            setCharSequence(R.id.txtTotalProductos, "setText", totalInventario)
+                            setImageViewResource(R.id.visibility, R.drawable.visibility_off_24)
+                        }else{
+                            setCharSequence(R.id.txtTotalProductos, "setText", "****")
+                            setImageViewResource(R.id.visibility, R.drawable.visibility_24)
+                        }
+
                     }
                     appWidgetManager.updateAppWidget(it, views)
                 }
+                sharedPreferences.edit().putBoolean("visibilityTotal", !visibilityTotal).apply()
             } else {
+                appWidgetManager.getAppWidgetIds(ComponentName(context, javaClass)).forEach {
+                    val views: RemoteViews = RemoteViews(
+                        context?.packageName, R.layout.inventory_widget
+                    ).apply {
+                        setCharSequence(R.id.txtTotalProductos, "setText", "****")
+                        setImageViewResource(R.id.visibility, R.drawable.visibility_24)
 
+                    }
+                    appWidgetManager.updateAppWidget(it, views)
+                }
+                sharedPreferences.edit().putBoolean("visibilityTotal", !visibilityTotal).apply()
+                val loginIntent = Intent(context, LoginActivity::class.java).apply {
+                    putExtra("widget", true)
+                }
+                loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(loginIntent)
             }
         }
     }

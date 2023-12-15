@@ -25,6 +25,8 @@ import android.util.Log
 import android.widget.ImageView
 import com.appmovil.proyecto2.R
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.NumberFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -78,7 +80,10 @@ class HomeFragment : Fragment() {
         })
 
         viewModel.obtenerTotalProductos().observe(viewLifecycleOwner, Observer{
-            sharedPreferences.edit().putString("totalInventario", it.toString()).apply()
+            val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))
+            numberFormat.minimumFractionDigits = 2
+            numberFormat.maximumFractionDigits = 2
+            sharedPreferences.edit().putString("totalInventario", numberFormat.format(it).toString()).apply()
         })
     }
 
