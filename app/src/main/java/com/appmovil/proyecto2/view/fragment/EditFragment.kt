@@ -76,8 +76,8 @@ class EditFragment : Fragment() {
     private fun editArticulo() {
         val nombre = binding.editTextNombre.text.toString()
         val cantidad = binding.editTextCantidad.text.toString().toInt()
-        val precio = binding.editTextPrecio.text.toString().toInt()
-        ViewModel.actualizarProducto(receivedArticulo.codigo, nombre, cantidad, precio)
+        val precio = binding.editTextPrecio.text.toString().toDouble()
+        ViewModel.actualizarProducto(receivedArticulo.codigo, nombre, precio,cantidad )
         findNavController().navigate(R.id.action_editFragment_to_homeFragment)
     }
 

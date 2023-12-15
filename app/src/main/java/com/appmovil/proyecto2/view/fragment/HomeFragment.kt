@@ -152,16 +152,16 @@ class HomeFragment : Fragment() {
         for (line in lines) {
             if (line.isNotBlank()) {
                 // Utilizar expresión regular para dividir la línea
-                val regex = Regex("Código: (\\d+) Nombre: (.+) Precio: (\\d+) Cantidad: (\\d+)")
+                val regex = Regex("Código: (\\d+) Nombre: (.+) Precio: (\\d+(?:\\.\\d+)?) Cantidad: (\\d+)")
                 val matchResult = regex.find(line)
 
                 if (matchResult != null && matchResult.groupValues.size == 5) {
                     try {
                         val codigo = matchResult.groupValues[1].toInt()
                         val nombre = matchResult.groupValues[2]
-                        val precio = matchResult.groupValues[3].toInt()
+                        val precio = matchResult.groupValues[3].toDouble()
                         val cantidad = matchResult.groupValues[4].toInt()
-
+                        Log.d("Parse", " parsing line: $codigo, $nombre, $precio, $cantidad", )
                         val articulo = Articulo(codigo, nombre, precio, cantidad)
                         productList.add(articulo)
                     } catch (e: Exception) {

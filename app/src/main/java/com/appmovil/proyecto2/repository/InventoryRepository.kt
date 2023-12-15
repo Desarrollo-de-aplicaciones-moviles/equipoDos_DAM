@@ -14,7 +14,7 @@ class InventoryRepository @Inject constructor(
     private val inventoryList: MutableLiveData<MutableList<Articulo>>
 
 ) {
-    suspend fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
+    suspend fun guardarProducto(codigo: Int, nombre: String, precio: Double, cantidad: Int): Boolean {
         return try {
             db.collection("articulo").document(codigo.toString()).set(
                 hashMapOf(
@@ -50,7 +50,7 @@ class InventoryRepository @Inject constructor(
     fun actualizarProducto(
         codigo: Int,
         nombre: String,
-        precio: Int,
+        precio: Double,
         cantidad: Int,
         productoActualizado: MutableLiveData<Boolean>
     ) {
@@ -84,7 +84,7 @@ class InventoryRepository @Inject constructor(
                     val item = Articulo(
                         document.get("codigo").toString().toInt(),
                         document.get("nombre").toString(),
-                        document.get("precio").toString().toInt(),
+                        document.get("precio").toString().toDouble(),
                         document.get("cantidad").toString().toInt()
                     )
                     data.add(item)

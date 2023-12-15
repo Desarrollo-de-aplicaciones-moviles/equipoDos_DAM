@@ -81,7 +81,7 @@ class InventoryViewModelTest {
         // Given
         val codigo = 15
         val nombre = "Item1"
-        val precio = 10
+        val precio = 10.0
         val cantidad = 5
         `when`(repository.actualizarProducto(codigo, nombre, precio, cantidad, inventoryViewModel.productoActualizado))
             .thenReturn(Unit)
