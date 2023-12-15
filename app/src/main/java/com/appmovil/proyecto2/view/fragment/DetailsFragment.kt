@@ -58,14 +58,9 @@ class DetailsFragment : Fragment() {
         val receivedBundle = arguments
         receivedArticulo = receivedBundle?.getSerializable("clave") as? Articulo ?: return
         binding.tvItem.text = receivedArticulo.nombre
-        binding.tvPrice.text = "$ ${receivedArticulo.precio}"
+        binding.tvPrice.text = String.format("$ %.2f", receivedArticulo.precio)
         binding.tvQuantity.text = "${receivedArticulo.cantidad}"
-        binding.txtTotal.text = "$ ${
-            viewModel.calcularValorTotalProducto(
-                receivedArticulo.precio,
-                receivedArticulo.cantidad
-            )
-        }"
+        binding.txtTotal.text = String.format("$ %.2f", viewModel.calcularValorTotalProducto(receivedArticulo.precio, receivedArticulo.cantidad))
     }
     private fun deleteArticulo() {
         viewModel.eliminarProducto(receivedArticulo.codigo)
