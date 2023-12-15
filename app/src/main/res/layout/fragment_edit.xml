@@ -37,16 +37,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="16dp"
+            app:hintTextColor="@color/white"
+            android:textColorHint="@color/white"
             app:counterEnabled="true"
             app:counterMaxLength="40">
-
-            <TextView
-                android:id="@+id/tvNombre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nombre del artículo"
-                android:textSize="10sp"
-                android:textColor="@color/white"/>
 
             <EditText
                 android:id="@+id/editTextNombre"
@@ -55,6 +49,9 @@
                 android:inputType="text"
                 android:maxLength="40"
                 android:padding="12dp"
+                android:hint="Nombre del Articulo"
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white"
                 android:textColor="@color/white"
                 app:boxStrokeColor="@color/white"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -67,16 +64,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="16dp"
+            app:hintTextColor="@color/white"
+            android:textColorHint="@color/white"
             app:counterEnabled="true"
             app:counterMaxLength="20">
-
-            <TextView
-                android:id="@+id/tvPrecio"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Precio"
-                android:textSize="10sp"
-                android:textColor="@color/white"/>
 
             <EditText
                 android:id="@+id/editTextPrecio"
@@ -86,6 +77,9 @@
                 android:maxLength="20"
                 android:padding="12dp"
                 android:textColor="@color/white"
+                android:hint="Precio"
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white"
                 app:boxStrokeColor="@color/white"/>
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,16 +91,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="16dp"
+            app:hintTextColor="@color/white"
+            android:textColorHint="@color/white"
             app:counterEnabled="true"
             app:counterMaxLength="4">
-
-            <TextView
-                android:id="@+id/tvCantidad"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cantidad"
-                android:textSize="10sp"
-                android:textColor="@color/white"/>
 
             <EditText
                 android:id="@+id/editTextCantidad"
@@ -116,6 +104,9 @@
                 android:maxLength="4"
                 android:padding="12dp"
                 android:textColor="@color/white"
+                android:hint="Cantidad"
+                android:textColorHint="@color/white"
+                app:hintTextColor="@color/white"
                 app:boxStrokeColor="@color/white"/>
         </com.google.android.material.textfield.TextInputLayout>
 
