@@ -3,6 +3,7 @@ package com.appmovil.proyecto2.view
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -35,6 +36,7 @@ class InventoryWidget : AppWidgetProvider() {
         val sharedPreferences = context.getSharedPreferences("shared", Context.MODE_PRIVATE)
 
 
+
         val visibilityTotal = sharedPreferences.getBoolean("visibilityTotal", false)
         val totalInventario = sharedPreferences.getString("totalInventario", "0")
         appWidgetIds.forEach { appWidgetId ->
@@ -57,9 +59,8 @@ class InventoryWidget : AppWidgetProvider() {
                     setCharSequence(R.id.txtTotalProductos, "setText", "****")
                     setImageViewResource(R.id.visibility, R.drawable.visibility_24)
                 }
+
             }
-
-
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
@@ -87,6 +88,7 @@ class InventoryWidget : AppWidgetProvider() {
                             setImageViewResource(R.id.visibility, R.drawable.visibility_24)
                         }
 
+
                     }
                     appWidgetManager.updateAppWidget(it, views)
                 }
@@ -102,16 +104,40 @@ class InventoryWidget : AppWidgetProvider() {
                     }
                     appWidgetManager.updateAppWidget(it, views)
                 }
-                sharedPreferences.edit().putBoolean("visibilityTotal", true).apply()
+
                 val loginIntent = Intent(context, LoginActivity::class.java).apply {
                     putExtra("widget", true)
                 }
                 sharedPreferences.edit().putBoolean("closeApp", true).apply()
+
                 loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(loginIntent)
 
-                Log.d("mensaLog", "tu puedes")
             }
+        }
+
+
+    }
+
+    companion object {
+        fun updateWidget(
+            context: Context,
+            appWidgetManager: AppWidgetManager,
+            widgetId: Int,
+            visibilityTotal: Boolean,
+            totalInventario: String
+        ) {
+            Log.d("mensaLog", "estoy aqui sup")
+            val views: RemoteViews = RemoteViews(
+                context.packageName, R.layout.inventory_widget
+            ).apply {
+                setCharSequence(R.id.txtTotalProductos, "setText", totalInventario)
+                setImageViewResource(
+                    R.id.visibility,
+                    R.drawable.visibility_off_24
+                )
+            }
+            appWidgetManager.updateAppWidget(widgetId, views)
         }
     }
 

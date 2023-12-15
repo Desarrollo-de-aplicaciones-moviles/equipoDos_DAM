@@ -1,5 +1,7 @@
 package com.appmovil.proyecto2.view.fragment
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -19,6 +21,7 @@ import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.databinding.FragmentHomeBinding
 import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.view.HomeActivity
+import com.appmovil.proyecto2.view.InventoryWidget
 import com.appmovil.proyecto2.view.LoginActivity
 import com.appmovil.proyecto2.view.adapter.ProductosAdapter
 import com.appmovil.proyecto2.viewmodel.InventoryViewModel
@@ -75,7 +78,7 @@ class HomeFragment : Fragment() {
             recyclerView.adapter = adapter
 
             actualizarTotal()
-            
+
             progressBar.visibility = View.GONE
             recyclerViewProductos.visibility = View.VISIBLE
 
@@ -85,9 +88,8 @@ class HomeFragment : Fragment() {
             numberFormat.minimumFractionDigits = 2
             numberFormat.maximumFractionDigits = 2
 
-            Log.d("mensaLog", "Valor actualizado en segundo plano: $it")
+            sharedPreferences.edit().putBoolean("visibilityTotal", true).apply()
 
-            // Actualiza el valor en SharedPreferences
             sharedPreferences.edit()
                 .putString("totalInventario", numberFormat.format(it).toString())
                 .apply()
@@ -105,12 +107,24 @@ class HomeFragment : Fragment() {
                 numberFormat.minimumFractionDigits = 2
                 numberFormat.maximumFractionDigits = 2
 
-                Log.d("mensaLog", "Valor actualizado en segundo plano: $it")
-
-                // Actualiza el valor en SharedPreferences
+                sharedPreferences.edit().putBoolean("visibilityTotal", true).apply()
                 sharedPreferences.edit()
                     .putString("totalInventario", numberFormat.format(it).toString())
                     .apply()
+
+                val widgetManager = AppWidgetManager.getInstance(requireContext())
+                val widgetIds = widgetManager.getAppWidgetIds(ComponentName(requireContext(),InventoryWidget::class.java))
+
+                widgetIds.forEach { widgetId ->
+                    InventoryWidget.updateWidget(
+                        requireContext(),
+                        widgetManager,
+                        widgetId,
+                        true,
+                        numberFormat.format(it).toString()
+                    )
+                }
+
             })
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_HOME)

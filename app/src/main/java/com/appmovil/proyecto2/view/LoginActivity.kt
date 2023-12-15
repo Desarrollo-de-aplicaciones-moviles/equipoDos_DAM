@@ -148,6 +148,8 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, HomeActivity::class.java).apply {
             putExtra("email", email)
         }
+        val loginSuccessIntent = Intent("INICIAR_SESION")
+        sendBroadcast(loginSuccessIntent)
         startActivity(intent)
         finish()
     }
