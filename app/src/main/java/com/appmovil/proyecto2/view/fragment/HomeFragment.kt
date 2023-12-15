@@ -184,6 +184,17 @@ class HomeFragment : Fragment() {
 
     private fun logOut() {
         sharedPreferences.edit().clear().apply()
+        val widgetManager = AppWidgetManager.getInstance(requireContext())
+        val widgetIds = widgetManager.getAppWidgetIds(ComponentName(requireContext(),InventoryWidget::class.java))
+        widgetIds.forEach { widgetId ->
+            InventoryWidget.updateWidget(
+                requireContext(),
+                widgetManager,
+                widgetId,
+                false,
+                "0"
+            )
+        }
         FirebaseAuth.getInstance().signOut()
         (requireActivity() as HomeActivity).apply {
             startActivity(Intent(this, LoginActivity::class.java))
