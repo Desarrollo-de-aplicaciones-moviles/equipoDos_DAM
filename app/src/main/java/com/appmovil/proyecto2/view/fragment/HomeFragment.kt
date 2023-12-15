@@ -4,26 +4,26 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.appmovil.proyecto2.viewmodel.InventoryViewModel
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.appmovil.proyecto2.view.adapter.ProductosAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.databinding.FragmentHomeBinding
 import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.view.HomeActivity
 import com.appmovil.proyecto2.view.LoginActivity
+import com.appmovil.proyecto2.view.adapter.ProductosAdapter
+import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import android.util.Log
-import android.widget.ImageView
-import com.appmovil.proyecto2.R
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.NumberFormat
 import java.util.Locale
@@ -74,17 +74,49 @@ class HomeFragment : Fragment() {
             val adapter = ProductosAdapter(requireContext(), productList, findNavController())
             recyclerView.adapter = adapter
 
+            actualizarTotal()
+            
             progressBar.visibility = View.GONE
             recyclerViewProductos.visibility = View.VISIBLE
 
         })
-
-        viewModel.obtenerTotalProductos().observe(viewLifecycleOwner, Observer{
+        viewModel.obtenerTotalProductos().observe(this, Observer {
             val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))
             numberFormat.minimumFractionDigits = 2
             numberFormat.maximumFractionDigits = 2
-            sharedPreferences.edit().putString("totalInventario", numberFormat.format(it).toString()).apply()
+
+            Log.d("mensaLog", "Valor actualizado en segundo plano: $it")
+
+            // Actualiza el valor en SharedPreferences
+            sharedPreferences.edit()
+                .putString("totalInventario", numberFormat.format(it).toString())
+                .apply()
         })
+
+
+    }
+
+    private fun actualizarTotal() {
+        val closeApp = sharedPreferences.getBoolean("closeApp", false)
+        if (closeApp) {
+            sharedPreferences.edit().remove("closeApp").apply()
+            viewModel.obtenerTotalProductos().observe(this, Observer {
+                val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))
+                numberFormat.minimumFractionDigits = 2
+                numberFormat.maximumFractionDigits = 2
+
+                Log.d("mensaLog", "Valor actualizado en segundo plano: $it")
+
+                // Actualiza el valor en SharedPreferences
+                sharedPreferences.edit()
+                    .putString("totalInventario", numberFormat.format(it).toString())
+                    .apply()
+            })
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            startActivity(intent)
+        }
+
     }
 
     private fun parseProductList(productos: String): List<Articulo> {
@@ -121,7 +153,7 @@ class HomeFragment : Fragment() {
     private fun dataLogin() {
         val bundle = requireActivity().intent.extras
         val email = bundle?.getString("email")
-        sharedPreferences.edit().putString("email",email).apply()
+        sharedPreferences.edit().putString("email", email).apply()
     }
 
     private fun logOut() {

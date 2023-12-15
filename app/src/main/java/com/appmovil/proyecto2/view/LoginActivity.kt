@@ -145,23 +145,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToHome(email: String?) {
-
-        val bundle = intent.extras
-        val closeApp = bundle?.getBoolean("widget", false)?:false
-        if (!closeApp) {
-            val intent = Intent(this, HomeActivity::class.java).apply {
-                putExtra("email", email)
-            }
-            startActivity(intent)
-            finish()
-        }else{
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.addCategory(Intent.CATEGORY_HOME)
-            startActivity(intent)
-
+        val intent = Intent(this, HomeActivity::class.java).apply {
+            putExtra("email", email)
         }
-
-
+        startActivity(intent)
+        finish()
     }
 
     private fun loginUser() {
