@@ -59,7 +59,7 @@ class AddFragment : Fragment() {
                 try {
                     val codigo = binding.editTextCodigoProducto.text.toString().toInt()
                     val nombre = binding.editTextNombre.text.toString()
-                    val precio = binding.editTextPrecio.text.toString().toInt()
+                    val precio = binding.editTextPrecio.text.toString().toDouble()
                     val cantidad = binding.editTextCantidad.text.toString().toInt()
 
                     // Llamada a guardarProducto y manejo del resultado

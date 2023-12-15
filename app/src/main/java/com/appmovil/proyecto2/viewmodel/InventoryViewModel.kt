@@ -16,7 +16,7 @@ class InventoryViewModel @Inject constructor(
     val productoActualizado = MutableLiveData<Boolean>()
     val productoEliminado = MutableLiveData<Boolean>()
 
-    suspend fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
+    suspend fun guardarProducto(codigo: Int, nombre: String, precio: Double, cantidad: Int): Boolean {
         return repository.guardarProducto(codigo, nombre, precio, cantidad)
     }
 
@@ -24,7 +24,7 @@ class InventoryViewModel @Inject constructor(
         return repository.listarProductos()
     }
 
-    fun actualizarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
+    fun actualizarProducto(codigo: Int, nombre: String, precio: Double, cantidad: Int): Boolean {
         repository.actualizarProducto(codigo, nombre, precio, cantidad, productoActualizado)
         return productoActualizado.value ?: false
     }
@@ -34,7 +34,7 @@ class InventoryViewModel @Inject constructor(
         return productoEliminado.value ?: false
     }
 
-    fun calcularValorTotalProducto(precio: Int, cantidad: Int): Int {
+    fun calcularValorTotalProducto(precio: Double, cantidad: Int): Double {
         return precio * cantidad
     }
 

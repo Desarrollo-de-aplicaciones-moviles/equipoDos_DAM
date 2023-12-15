@@ -38,7 +38,7 @@ class InventoryViewModelTest {
         //given
         val codigo = 15
         val nombre = "Item1"
-        val precio = 10
+        val precio = 10.0
         val cantidad = 5
 
         `when`(repository.guardarProducto(codigo, nombre, precio, cantidad))
@@ -82,7 +82,7 @@ class InventoryViewModelTest {
         //given
         val codigo = 15
         val nombre = "NuevoNombre"
-        val precio = 20
+        val precio = 20.0
         val cantidad = 8
 
         `when`(repository.actualizarProducto(codigo, nombre, precio, cantidad, inventoryViewModel.productoActualizado))
@@ -127,14 +127,14 @@ class InventoryViewModelTest {
     @Test
     fun `test metodo calcularValorTotalProducto`() {
         // Given
-        val precio = 10
+        val precio = 10.0
         val cantidad = 5
 
         // When
-        val resultado = inventoryViewModel.calcularValorTotalProducto(precio, cantidad)
+        val result = inventoryViewModel.calcularValorTotalProducto(precio, cantidad)
 
         // Then
-        assertEquals(50, resultado)
+        assertEquals(50.0, result,0.001)
     }
 
     @Test
