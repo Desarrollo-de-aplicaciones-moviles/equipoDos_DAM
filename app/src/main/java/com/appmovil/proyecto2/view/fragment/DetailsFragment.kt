@@ -37,14 +37,20 @@ class DetailsFragment : Fragment() {
         dataArticulo()
         controladores()
         val backButtonDet: ImageView = binding.root.findViewById(R.id.backButtonDet)
-        backButtonDet.setOnClickListener {
-            findNavController().popBackStack()
+        backButtonDet.setOnClickListener {it.animate().scaleX(0.8f).scaleY(0.8f).setDuration(200).withEndAction {
+            it.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+            findNavController().popBackStack()}.start()
         }
     }
 
     private fun controladores() {
         binding.btnDelete.setOnClickListener {
             deleteArticulo()
+        }
+        binding.btnEdit.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putSerializable("clave", receivedArticulo)
+            findNavController().navigate(R.id.action_detailsFragment_to_editFragment, bundle)
         }
     }
    @SuppressLint("SetTextI18n")

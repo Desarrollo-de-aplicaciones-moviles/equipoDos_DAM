@@ -1,30 +1,35 @@
 package com.appmovil.proyecto2.view.fragment
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.appmovil.proyecto2.viewmodel.InventoryViewModel
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.appmovil.proyecto2.view.adapter.ProductosAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.databinding.FragmentHomeBinding
 import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.view.HomeActivity
+import com.appmovil.proyecto2.view.InventoryWidget
 import com.appmovil.proyecto2.view.LoginActivity
+import com.appmovil.proyecto2.view.adapter.ProductosAdapter
+import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import android.util.Log
-import android.widget.ImageView
-import com.appmovil.proyecto2.R
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.NumberFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -72,10 +77,72 @@ class HomeFragment : Fragment() {
             val adapter = ProductosAdapter(requireContext(), productList, findNavController())
             recyclerView.adapter = adapter
 
+            actualizarTotal()
+
             progressBar.visibility = View.GONE
             recyclerViewProductos.visibility = View.VISIBLE
 
         })
+        viewModel.obtenerTotalProductos().observe(this, Observer {
+            val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))
+            numberFormat.minimumFractionDigits = 2
+            numberFormat.maximumFractionDigits = 2
+
+
+
+            sharedPreferences.edit()
+                .putString("totalInventario", numberFormat.format(it).toString())
+                .apply()
+            val widgetManager = AppWidgetManager.getInstance(requireContext())
+            val widgetIds = widgetManager.getAppWidgetIds(ComponentName(requireContext(),InventoryWidget::class.java))
+            val visibilityTotal = sharedPreferences.getBoolean("visibilityTotal", false)
+            widgetIds.forEach { widgetId ->
+                InventoryWidget.updateWidget(
+                    requireContext(),
+                    widgetManager,
+                    widgetId,
+                    visibilityTotal,
+                    numberFormat.format(it).toString()
+                )
+            }
+        })
+
+
+    }
+
+    private fun actualizarTotal() {
+        val closeApp = sharedPreferences.getBoolean("closeApp", false)
+        if (closeApp) {
+            sharedPreferences.edit().remove("closeApp").apply()
+            viewModel.obtenerTotalProductos().observe(this, Observer {
+                val numberFormat = NumberFormat.getNumberInstance(Locale("es", "ES"))
+                numberFormat.minimumFractionDigits = 2
+                numberFormat.maximumFractionDigits = 2
+
+                sharedPreferences.edit().putBoolean("visibilityTotal", true).apply()
+                sharedPreferences.edit()
+                    .putString("totalInventario", numberFormat.format(it).toString())
+                    .apply()
+
+                val widgetManager = AppWidgetManager.getInstance(requireContext())
+                val widgetIds = widgetManager.getAppWidgetIds(ComponentName(requireContext(),InventoryWidget::class.java))
+
+                widgetIds.forEach { widgetId ->
+                    InventoryWidget.updateWidget(
+                        requireContext(),
+                        widgetManager,
+                        widgetId,
+                        true,
+                        numberFormat.format(it).toString()
+                    )
+                }
+
+            })
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            startActivity(intent)
+        }
+
     }
 
     private fun parseProductList(productos: String): List<Articulo> {
@@ -112,7 +179,7 @@ class HomeFragment : Fragment() {
     private fun dataLogin() {
         val bundle = requireActivity().intent.extras
         val email = bundle?.getString("email")
-        sharedPreferences.edit().putString("email",email).apply()
+        sharedPreferences.edit().putString("email", email).apply()
     }
 
     private fun logOut() {
