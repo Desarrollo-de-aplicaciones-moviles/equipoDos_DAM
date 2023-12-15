@@ -5,7 +5,7 @@
     >
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbarAdd"
+        android:id="@+id/toolbarEdit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
@@ -14,22 +14,22 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/backButton"
+            android:id="@+id/backButtonEdit"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="16dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:contentDescription="@string/tituloTooladd"
+            android:contentDescription="@string/tituloToolEdit"
             android:onClick="onBackButtonClick"
             android:src="@drawable/ic_back" />
 
 
         <TextView
-            android:id="@+id/titleTextView"
+            android:id="@+id/titleTextViewEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/tituloTooladd"
+            android:text="@string/tituloToolEdit"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="24sp" />
