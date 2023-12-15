@@ -37,4 +37,8 @@ class InventoryViewModel @Inject constructor(
     fun calcularValorTotalProducto(precio: Int, cantidad: Int): Int {
         return precio * cantidad
     }
+
+    fun obtenerTotalProductos(): LiveData<Double> {
+        return repository.totalInventario()
+    }
 }
