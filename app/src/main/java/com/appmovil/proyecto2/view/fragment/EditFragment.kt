@@ -4,18 +4,22 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.appmovil.proyecto2.R
 import com.appmovil.proyecto2.databinding.FragmentEditBinding
 import com.appmovil.proyecto2.model.Articulo
 import com.appmovil.proyecto2.viewmodel.InventoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class EditFragment : Fragment() {
@@ -74,11 +78,27 @@ class EditFragment : Fragment() {
     }
 
     private fun editArticulo() {
-        val nombre = binding.editTextNombre.text.toString()
-        val cantidad = binding.editTextCantidad.text.toString().toInt()
-        val precio = binding.editTextPrecio.text.toString().toDouble()
-        ViewModel.actualizarProducto(receivedArticulo.codigo, nombre, precio,cantidad )
-        findNavController().navigate(R.id.action_editFragment_to_homeFragment)
+        lifecycleScope.launch {
+            try {
+                val nombre = binding.editTextNombre.text.toString()
+                val precio = binding.editTextPrecio.text.toString().toDouble()
+                val cantidad = binding.editTextCantidad.text.toString().toInt()
+                val exitoso = ViewModel.guardarProducto(receivedArticulo.codigo, nombre, precio, cantidad)
+                if (exitoso) {
+                    findNavController().navigate(R.id.action_editFragment_to_homeFragment)
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Ha ocurrido un error al editar el producto",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Log.e("AddFragment", "Error al intentar editar el producto", e)
+                Toast.makeText(context, "Ha ocurrido un error inesperado", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     }
 
     private fun checkFieldsForEmptyValues() {

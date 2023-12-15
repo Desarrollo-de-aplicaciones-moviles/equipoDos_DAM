@@ -46,6 +46,7 @@
                     android:padding="5dp"
                     android:textSize="16sp"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -56,6 +57,7 @@
                     android:text="Precio Unidad :"
                     android:padding="5dp"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
                     app:layout_constraintTop_toBottomOf="@+id/tvItem"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -78,6 +80,7 @@
                     android:text="Cantidad Disponible:"
                     android:padding="5dp"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
                     app:layout_constraintTop_toBottomOf="@+id/tvName"
                     app:layout_constraintStart_toStartOf="parent"/>
 
@@ -90,6 +93,7 @@
                     android:textSize="16sp"
                     android:layout_marginEnd="8dp"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     app:layout_constraintTop_toBottomOf="@+id/tvPrice"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -100,6 +104,7 @@
                     android:text="Total:"
                     android:padding="5dp"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
                     app:layout_constraintTop_toBottomOf="@+id/tvQuantityAvailible"
                     app:layout_constraintStart_toStartOf="parent"/>
 
