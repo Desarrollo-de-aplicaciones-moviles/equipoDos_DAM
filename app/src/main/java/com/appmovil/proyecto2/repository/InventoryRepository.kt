@@ -103,8 +103,8 @@ class InventoryRepository @Inject constructor(
             var totalInventario = 0.0
 
             for (document in querySnapshot.documents) {
-                val precio = document.get("precio") as? Double ?: 0.0
-                val cantidad = document.get("cantidad") as? Int ?: 0
+                val precio = document.get("precio").toString().toDouble()
+                val cantidad = document.get("cantidad").toString().toInt()
 
                 totalInventario += precio * cantidad
             }

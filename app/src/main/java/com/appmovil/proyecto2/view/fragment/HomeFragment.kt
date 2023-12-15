@@ -76,6 +76,10 @@ class HomeFragment : Fragment() {
             recyclerViewProductos.visibility = View.VISIBLE
 
         })
+
+        viewModel.obtenerTotalProductos().observe(viewLifecycleOwner, Observer{
+            sharedPreferences.edit().putString("totalInventario", it.toString()).apply()
+        })
     }
 
     private fun parseProductList(productos: String): List<Articulo> {
