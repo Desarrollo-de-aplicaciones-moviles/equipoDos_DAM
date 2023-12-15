@@ -36,9 +36,10 @@ class EditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         dataArticulo()
         controladores()
-        val backButtonDet: ImageView = binding.root.findViewById(R.id.backButtonEdit)
-        backButtonDet.setOnClickListener {
-            findNavController().popBackStack()
+        val backButtonEdit: ImageView = binding.root.findViewById(R.id.backButtonEdit)
+        backButtonEdit.setOnClickListener {it.animate().scaleX(0.8f).scaleY(0.8f).setDuration(200).withEndAction {
+            it.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+            findNavController().popBackStack()}.start()
         }
     }
 

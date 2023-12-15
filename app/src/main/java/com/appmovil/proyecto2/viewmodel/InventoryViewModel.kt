@@ -13,8 +13,8 @@ class InventoryViewModel @Inject constructor(
     private val repository: InventoryRepository
 ) : ViewModel() {
     private val productoGuardado = MutableLiveData<Boolean>()
-    private val productoActualizado = MutableLiveData<Boolean>()
-    private val productoEliminado = MutableLiveData<Boolean>()
+    val productoActualizado = MutableLiveData<Boolean>()
+    val productoEliminado = MutableLiveData<Boolean>()
 
     suspend fun guardarProducto(codigo: Int, nombre: String, precio: Int, cantidad: Int): Boolean {
         return repository.guardarProducto(codigo, nombre, precio, cantidad)

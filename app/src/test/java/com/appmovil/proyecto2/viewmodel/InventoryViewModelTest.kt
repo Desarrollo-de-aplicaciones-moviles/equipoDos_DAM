@@ -75,6 +75,43 @@ class InventoryViewModelTest {
         // Verifica que el LiveData en el ViewModel ha sido actualizado con la data simulada
         verify(observer).onChanged(productosMock)
     }
+
+    @Test
+    fun `test metodo actualizarProducto`() = runBlockingTest {
+        // Given
+        val codigo = 15
+        val nombre = "Item1"
+        val precio = 10
+        val cantidad = 5
+        `when`(repository.actualizarProducto(codigo, nombre, precio, cantidad, inventoryViewModel.productoActualizado))
+            .thenReturn(Unit)
+
+        // When
+        inventoryViewModel.actualizarProducto(codigo, nombre, precio, cantidad)
+
+        // Then
+        verify(repository).actualizarProducto(codigo, nombre, precio, cantidad, inventoryViewModel.productoActualizado)
+
+        // Verificamos que productoActualizado sea true
+        assert(inventoryViewModel.productoActualizado.value == true)
+    }
+
+    @Test
+    fun `test metodo eliminarProducto`() = runBlockingTest {
+        // Given
+        val codigo = 15
+        `when`(repository.eliminarProducto(codigo, inventoryViewModel.productoEliminado))
+            .thenReturn(Unit)
+
+        // When
+        inventoryViewModel.eliminarProducto(codigo)
+
+        // Then
+        verify(repository).eliminarProducto(codigo, inventoryViewModel.productoEliminado)
+
+        // Verificamos que productoEliminado sea true
+        assert(inventoryViewModel.productoEliminado.value == true)
+    }
 }
 
 
